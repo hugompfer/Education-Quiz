@@ -1,0 +1,61 @@
+#root{  
+    -fx-background-color: white;
+}
+
+#btnBack{
+    -fx-pref-height:50;
+    -fx-pref-width:50;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 50 50;
+    -fx-background-image:url("/resources/back.png");
+    -fx-background-position:  center; 
+    -fx-background-color: transparent;
+}
+
+#title{
+    -fx-font-family:   Arial,Roboto,Helvetica, sans-serif;
+    -fx-font-size: 27px; 
+}
+
+
+.button{
+    -fx-pref-height:100;
+    -fx-pref-width:300;
+    -fx-font-size:15;
+    -fx-font-weight:bolder;
+    -fx-background-radius: 0.5em; 
+    -fx-background-color: #BED4FF;
+    -fx-border-radius:0.5em;
+    -fx-border-background:black;
+}
+
+.button:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
+#topBox{
+    -fx-alignment: CENTER_LEFT ;
+    -fx-spacing:30;
+    -fx-padding: 10 0 20 10;
+}
+
+
+#questionArea{
+    -fx-padding: 10 10 20 10;
+    -fx-alignment: CENTER ;
+}
+
+#gridPane{
+    -fx-padding: 25 10 10 10;
+    -fx-alignment: CENTER ;
+    -fx-hgap: 10;
+    -fx-vgap: 10;
+    -fx-background-fill: black, white ;
+    -fx-background-insets: 0, 1 ;
+}
+
+#questionTitle{
+    -fx-font-family:   Arial,Roboto,Helvetica, sans-serif;
+    -fx-font-size: 24px; 
+    -fx-text-alignment: CENTER ;
+}

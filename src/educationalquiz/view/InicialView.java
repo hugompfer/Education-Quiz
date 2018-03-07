@@ -25,68 +25,56 @@ import javafx.stage.Stage;
  */
 public class InicialView extends VBox {
 
-    private HBox top;
-    private VBox center;
     private Button btnLibrary;
     private Button btnNewQuiz;
     private QuizManager manager;
-    
+
     public InicialView(QuizManager manager) {
-        top = new HBox();
-        center = new VBox();
-        btnLibrary = new Button("Meus Quizes");
-        btnNewQuiz = new Button("Novo Quiz");
-        this.manager=manager;
+
+        btnLibrary = new Button("MEUS QUIZES");
+        btnNewQuiz = new Button("NOVO QUIZ");
+        this.manager = manager;
         setupLayout();
         setupBehaviour();
+        setupStyles();
+    }
+
+    private void setupStyles() {
+        getStylesheets().add("css/InicialView.css");
+        setId("root");
+        btnLibrary.setId("");
     }
 
     private void setupLayout() {
-        inicializeTop();
-        inicializeCenter();
-        getChildren().addAll(top, center);
+
+        VBox center = new VBox();
+        center.getChildren().addAll(btnNewQuiz,btnLibrary);
+        center.setId("center");
+        getChildren().addAll(inicializeTop(), center);
     }
 
-    private void inicializeTop() {
+    private HBox inicializeTop() {
         ImageView img = new ImageView(new Image("/resources/interrogation.png"));
         img.setFitWidth(150);
         img.setFitHeight(150);
+        HBox top = new HBox();
         top.getChildren().add(img);
-        top.setAlignment(Pos.CENTER);
-        top.setPadding(new Insets(20, 0, 20, 0));
-    }
-
-    private void inicializeCenter() {
-        btnNewQuiz.setStyle("-fx-font-size: 15");
-        btnLibrary.setStyle("-fx-font-size: 15");
-        btnLibrary.setMinWidth(300);
-        btnLibrary.setMinHeight(100);
-        btnLibrary.setMaxWidth(300);
-        btnLibrary.setMaxHeight(100);
-        btnNewQuiz.setMinWidth(300);
-        btnNewQuiz.setMinHeight(100);
-        btnNewQuiz.setMaxWidth(300);
-        btnNewQuiz.setMaxHeight(100);
-        center.getChildren().addAll(btnLibrary, btnNewQuiz);
-        center.setAlignment(Pos.CENTER);
-        center.setPadding(new Insets(20, 0, 20, 0));
-        center.setSpacing(50);
+        top.setId("top");
+        return top;
     }
 
     private void setupBehaviour() {
-        btnLibrary.setOnAction(e->{
-            
-            QuizzesLibrary view = new QuizzesLibrary(manager);
+        btnLibrary.setOnAction(e -> {
+            QuizzesLibrary view = new QuizzesLibrary(manager.getQuizzes());
             QuizzesLibraryPresenter p = new QuizzesLibraryPresenter(manager, view);
             Stage stage = (Stage) getScene().getWindow();
             stage.setScene(new Scene(view, 700, 650));
         }
         );
-        
-        btnNewQuiz.setOnAction(e->{
-        
-            CreateQuiz view=new CreateQuiz(manager);
-            CreateQuizPresenter p=new CreateQuizPresenter(manager, view,new Quiz());
+
+        btnNewQuiz.setOnAction(e -> {
+            CreateQuiz view = new CreateQuiz();
+            CreateQuizPresenter p = new CreateQuizPresenter(manager, view, new Quiz());
             Stage stage = (Stage) getScene().getWindow();
             stage.setScene(new Scene(view, 700, 700));
         }

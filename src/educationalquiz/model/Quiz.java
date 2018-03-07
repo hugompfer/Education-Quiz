@@ -30,6 +30,7 @@ public class Quiz implements Serializable {
         this.category = category;
         this.name = name;
         index = 0;
+
     }
 
     public Quiz(List<Question> questions, String category, String name) {
@@ -51,28 +52,19 @@ public class Quiz implements Serializable {
         questions.add(question);
     }
 
-    public void removeQuestion(Question question) {
-        questions.remove(question);
+    public boolean removeQuestion(Question question) {
+        return questions.remove(question);
     }
 
-    public Question nextQuestion() {
+    public int numberOfQuestions() {
+        return questions.size();
+    }
 
-        if ((index+1) > questions.size() - 1) {
-            return null;
+    public Question getQuestion(int pos) {
+        if (pos >= 0 && pos < questions.size()) {
+            return questions.get(pos);
         }
-        return questions.get(++index);
-    }
-
-    public Question previousQuestion() {
-
-        if ((index-1) < 0) {
-            return null;
-        }
-        return questions.get(--index);
-    }
-
-    public Question getAtualQuestion() {
-        return questions.get(index);
+        return null;
     }
 
     public String getCategory() {
@@ -86,12 +78,30 @@ public class Quiz implements Serializable {
     public List<Question> getQuestions() {
         return questions;
     }
-    
+
     public List<Answer> getAnswers() {
-        List<Answer> answers=new ArrayList<>();
-        for(Question a: questions){
+        List<Answer> answers = new ArrayList<>();
+        for (Question a : questions) {
             answers.addAll((Collection<? extends Answer>) a.getAnswers());
         }
         return answers;
     }
+
+    public boolean containsName(String name) {
+        return this.name.toLowerCase().contains(name.toLowerCase());
+    }
+
+    public boolean containsCategory(String category) {
+        return this.category.toLowerCase().contains(category.toLowerCase());
+    }
+
+    public boolean containsAll(String f) {
+        return (this.category.toLowerCase()+" - "+this.name.toLowerCase()).contains(f.toLowerCase());
+    }
+
+    @Override
+    public String toString() {
+        return category + " - " + name;
+    }
+
 }

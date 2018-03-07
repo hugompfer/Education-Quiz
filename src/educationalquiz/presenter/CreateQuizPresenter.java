@@ -11,7 +11,7 @@ import educationalquiz.model.QuizManager;
 import educationalquiz.view.CreateQuestion;
 import educationalquiz.view.CreateQuiz;
 import educationalquiz.view.InicialView;
-import educationalquiz.view.ListViewer;
+import educationalquiz.view.ReuseQuestion;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -39,12 +39,15 @@ public class CreateQuizPresenter {
             if (manager.addQuiz(model)) {
                 back();
             }
+        }else{
+            view.showInfo("Verifique se tem todos os campos preenchidos.");
         }
+            
     }
 
     public void createQuestion() {
         updateQuiz();
-        CreateQuestion view = new CreateQuestion(manager);
+        CreateQuestion view = new CreateQuestion();
         CreateQuestionPresenter p = new CreateQuestionPresenter(manager, view, model);
         Stage stage = (Stage) this.view.getScene().getWindow();
         stage.setScene(new Scene(view, 700, 700));
@@ -57,18 +60,20 @@ public class CreateQuizPresenter {
 
     public void reuseQuestion() {
         updateQuiz();
-        ListViewer view = new ListViewer(manager.getQuestions(), new Question());
+        ReuseQuestion view = new ReuseQuestion(manager.getQuestions(), new Question());
         ListViewerPresenter p = new ListViewerPresenter(manager, view, model);
         Stage stage = (Stage) this.view.getScene().getWindow();
         stage.setScene(new Scene(view, 700, 650));
     }
 
-    public void viewQuestion(Question q) {
-        updateQuiz();
-        CreateQuestion view = new CreateQuestion(q, manager);
-        EditQuestionPresenter p = new EditQuestionPresenter(manager, view, model, q);
-        Stage stage = (Stage) this.view.getScene().getWindow();
-        stage.setScene(new Scene(view, 700, 700));
+    public void viewQuestion(Question selected) {
+        if (selected != null) {
+            updateQuiz();
+            CreateQuestion view = new CreateQuestion(selected);
+            EditQuestionPresenter p = new EditQuestionPresenter(manager, view, model, selected);
+            Stage stage = (Stage) this.view.getScene().getWindow();
+            stage.setScene(new Scene(view, 700, 700));
+        }
     }
 
     public void back() {
@@ -79,4 +84,24 @@ public class CreateQuizPresenter {
     public Quiz getModel() {
         return model;
     }
+
+    public void delete(Question selected) {
+        if (selected != null) {
+            if (view.showConfirmation(model.getCategory() + " - " + model.getName())) {
+                if (model.removeQuestion(selected)) {
+                    view.showInfo();
+                    refresh();
+                }
+            }
+        }
+
+    }
+
+    private void refresh() {
+        CreateQuiz view = new CreateQuiz(model);
+        CreateQuizPresenter p = new CreateQuizPresenter(manager, view, model);
+        Stage stage = (Stage) this.view.getScene().getWindow();
+        stage.setScene(new Scene(view, 700, 700));
+    }
+
 }

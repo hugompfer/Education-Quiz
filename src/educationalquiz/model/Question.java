@@ -109,7 +109,7 @@ public class Question implements Serializable {
     }
 
     public boolean containsTitle(String f) {
-        return title.contains(f);
+        return title.toLowerCase().contains(f.toLowerCase());
     }
     
     @Override

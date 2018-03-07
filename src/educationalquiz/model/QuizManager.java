@@ -14,43 +14,44 @@ import java.util.Set;
  * @author hugob
  */
 public class QuizManager {
+
     private QuizDAO quizs;
-   
-    public QuizManager(){
-        quizs=new QuizDAOSerializable("");
-        
+
+    public QuizManager() {
+        quizs = new QuizDAOSerializable("");
     }
-    
-    public List<Quiz> getQuizzes(){
+
+    public List<Quiz> getQuizzes() {
         return quizs.selectQuiz();
     }
-    
-    public Set<Question> getQuestions(){
-        Set<Question> questions=new HashSet<>();
-        for(Quiz q: quizs.selectQuiz()){
+
+    public Set<Question> getQuestions() {
+        Set<Question> questions = new HashSet<>();
+        for (Quiz q : quizs.selectQuiz()) {
             questions.addAll(q.getQuestions());
         }
         return questions;
     }
-    
-    public Set<Answer> getAnswers(){
-        Set<Answer> answers=new HashSet<>();
-        for(Quiz q: quizs.selectQuiz()){
+
+    public Set<Answer> getAnswers() {
+        Set<Answer> answers = new HashSet<>();
+        for (Quiz q : quizs.selectQuiz()) {
             answers.addAll(q.getAnswers());
         }
         return answers;
     }
-    
-    public boolean addQuiz(Quiz q){
+
+    public boolean addQuiz(Quiz q) {
+        quizs.removeQuiz(q);
         return quizs.insertQuiz(q);
     }
 
     public boolean removeQuiz(Quiz quiz) {
-       return quizs.removeQuiz(quiz);
+        return quizs.removeQuiz(quiz);
     }
 
     public boolean updateQuiz(Quiz model) {
         return quizs.updateQuiz(model);
     }
-     
+
 }

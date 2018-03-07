@@ -1,0 +1,196 @@
+.root{
+    -fx-background:#ECEBEB;
+    -fx-padding: 10 10 10 10;
+}
+
+#title{
+    -fx-font-family:   Arial,Roboto,Helvetica, sans-serif;
+    -fx-font-size: 24px; 
+}
+
+.label{
+    -fx-font-family:   Arial,Roboto,Helvetica, sans-serif;
+    -fx-font-size: 15px ; 
+    -fx-font-weight: bold;
+}
+
+#txtFilter{
+    -fx-max-height:35;
+    -fx-max-width:300;
+    -fx-min-height:35;
+    -fx-min-width:300;
+    -fx-background-color: white;
+    -fx-border-color:gray;
+}
+
+#textFieldAnswer{
+    -fx-max-height:50;
+    -fx-max-width:450;
+    -fx-min-height:50;
+    -fx-min-width:450;
+    -fx-background-color: white;
+    -fx-border-color:gray;
+}
+
+.text-field{
+    -fx-max-height:45;
+    -fx-max-width:260;
+    -fx-min-height:45;
+    -fx-min-width:260;
+    -fx-background-color: white;
+    -fx-border-color:gray;
+}
+
+.text-area{
+    -fx-pref-height:150;
+    -fx-pref-width:380;  
+    -fx-background-color: white;
+    -fx-border-color:gray;
+}
+
+#imageArea{
+    -fx-max-height:150;
+    -fx-max-width:150;
+    -fx-min-height:150;
+    -fx-min-width:150;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position:  center; 
+    -fx-background-color: transparent;
+    -fx-border-color: gray;
+    -fx-alignment: CENTER ;
+
+}
+
+#btnConfirm{
+    -fx-pref-height:50;
+    -fx-pref-width:100;
+    -fx-background-color: #fc505c;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-family:   Arial,Roboto,Helvetica, sans-serif;
+    -fx-background-radius: 0.5em;  
+}
+
+#btnBack{
+    -fx-pref-height:50;
+    -fx-pref-width:50;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 50 50;
+    -fx-background-image:url("/resources/back.png");
+    -fx-background-position:  center; 
+    -fx-background-color: transparent;
+}
+
+#center{
+    -fx-padding: 5 5 5 5;
+    -fx-alignment: CENTER;
+
+}
+
+#optionsButton{
+    -fx-background-color: white;
+    -fx-background-radius: 0em;
+    -fx-border-color: black;
+    -fx-pref-height:50;
+    -fx-pref-width:50;
+    -fx-padding: 10 10 10 10;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 20 20;
+    -fx-background-position:  center; 
+}
+
+#buttonsBox{
+    -fx-alignment: CENTER_RIGHT ;
+    -fx-spacing:20;
+}
+
+#textfieldBox{
+    -fx-alignment: CENTER_LEFT ;
+    -fx-spacing:10;
+    -fx-padding: 0 0 10 0;
+}
+
+#reuseFilterBox{
+    -fx-alignment: CENTER_LEFT ;
+    -fx-padding: 0 0 10 45;
+    -fx-spacing:10;
+}
+
+#optionsBox{
+    -fx-alignment: CENTER ;
+    -fx-padding: 0 0 15 0;
+    -fx-spacing:90;
+}
+
+#optionsBoxWithCbx{
+    -fx-alignment: CENTER ;
+    -fx-padding: 10 0 15 0;
+    -fx-spacing:187;
+}
+
+#cbxOptionsBox{
+    -fx-alignment: CENTER_LEFT ;
+}
+
+#CategoryNameBox{
+    -fx-alignment: CENTER;
+    -fx-padding: 0 0 15 0;
+    -fx-spacing:60;
+}
+
+
+#topBox{
+    -fx-alignment: CENTER_LEFT ;
+    -fx-spacing:30;
+    -fx-padding: 10 0 20 10;
+}
+
+#QuestionArea{
+    -fx-alignment: CENTER ;
+    -fx-padding: 10 0 0 0;
+}
+
+
+#bottom{
+    -fx-alignment: CENTER_RIGHT ;
+    -fx-padding: 0 50 10 0;
+}
+
+#bottomCenter{
+    -fx-alignment: CENTER ;
+    -fx-padding: 0 0 5 0;
+}
+
+#zone{
+    -fx-alignment: CENTER ;
+    -fx-spacing:20;
+}
+
+#separaton{
+    -fx-spacing:10;
+}
+
+#centerBoxsSeparation{
+    -fx-spacing:20;
+}
+
+.radio-button .radio {
+    -fx-border-width: 1px;
+    -fx-border-color: gray;
+    -fx-background-color: white;
+    -fx-padding: 10 10 10 10;
+
+}
+
+#radioButtons{
+    -fx-padding: 20 10 10 10;
+    -fx-spacing:57;
+}
+
+#resuseBox{
+    -fx-padding: 5 5 50 5;
+    -fx-alignment: CENTER;
+
+}
+
+

@@ -13,22 +13,18 @@ import educationalquiz.presenter.EditQuestionPresenter;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.List;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 
@@ -36,49 +32,39 @@ import javafx.stage.FileChooser;
  *
  * @author hugob
  */
-public class CreateQuestion extends VBox {
+public class CreateQuestion extends BorderPane {
 
-    private GridPane questionInformation;
     private VBox imageArea;
     private ImageView image;
-    private VBox top;
     private TextArea title;
     private URI source;
     private ArrayList<TextArea> answers;
     private ArrayList<RadioButton> radioButtons;
     private ToggleGroup checks;
-    private List<Button> btnAnswer;
-    private Button confirm;
-    private Button cancel;
-    private HBox bottom;
-    private QuizManager manager;
+    private Button btnConfirm;
+    private Button btnBack;
     private Question question;
 
-    public CreateQuestion(QuizManager manager) {
+    public CreateQuestion() {
         imageArea = new VBox();
         image = new ImageView();
-        top = new VBox();
         title = new TextArea();
         answers = inicializeAnswers();
-        questionInformation = new GridPane();
         checks = new ToggleGroup();
         radioButtons = inicializeRadioButtons();
-        btnAnswer = new ArrayList<>();
-        bottom = new HBox();
         source = null;
-        this.manager = manager;
         setupLayout();
         setupBehaviour();
     }
 
-    public CreateQuestion(Question question, QuizManager manager) {
-        this(manager);
+    public CreateQuestion(Question question) {
+        this();
         this.question = question;
         setupQuestionLayout();
     }
 
-    public CreateQuestion(String title, QuizManager manager) {
-        this(manager);
+    public CreateQuestion(String title) {
+        this();
         this.title.setText(title);
     }
 
@@ -101,11 +87,13 @@ public class CreateQuestion extends VBox {
     }
 
     private ArrayList<TextArea> inicializeAnswers() {
-        ArrayList<TextArea> textAreas = new ArrayList<>();
+        ArrayList<TextArea> textFields = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            textAreas.add(new TextArea());
+            TextArea tf = new TextArea();
+            tf.setId("textFieldAnswer");
+            textFields.add(tf);
         }
-        return textAreas;
+        return textFields;
     }
 
     private ArrayList<RadioButton> inicializeRadioButtons() {
@@ -116,136 +104,107 @@ public class CreateQuestion extends VBox {
         return rb;
     }
 
+    private void setupTop() {
+        Text text = new Text("Nova Questão");
+        text.setId("title");
+        HBox hbox = new HBox();
+        hbox.setId("topBox");
+        hbox.getChildren().addAll(btnBack, text);
+        setTop(hbox);
+    }
+
+    private void setupButtons() {
+        btnBack = new Button();
+        btnConfirm = new Button("Concluir");
+    }
+
+    private void setupStyles() {
+        getStylesheets().add("css/Library.css");
+        setId("root");
+        btnBack.setId("btnBack");
+        btnConfirm.setId("btnConfirm");
+    }
+
     private void setupLayout() {
-        inicializeInformation();
-        incializeTextArea();
-        inicializeRadioButton();
-        inicializeButtons();
+        setupButtons();
+        setupStyles();
+        setupTop();
+        HBox firstZone = inicializeFirstZone();
+        HBox secondZone = inicializeSecondZone();
+        VBox center = new VBox();
+        center.setId("centerBoxsSeparation");
+        center.getChildren().addAll(firstZone, secondZone);
+        setCenter(center);
         inicializeBottomButtons();
+    }
+
+    private VBox createImage() {
+        VBox vbox = new VBox();
         image = incializeImageView("/resources/interrogation.png");
         imageArea.getChildren().add(image);
-        imageArea.setStyle("-fx-border-color: black;\n"
-                + "-fx-border-insets: 5;\n"
-                + "-fx-border-width: 3;\n"
-                + "-fx-border-style: dashed;\n");
-        imageArea.setMinSize(200, 200);
-        imageArea.setMaxSize(200, 200);
-        imageArea.setTranslateX(240);
-        imageArea.setTranslateY(10);
-        imageArea.setAlignment(Pos.CENTER);
+        imageArea.setId("imageArea");
+        vbox.setId("separaton");
+        vbox.getChildren().addAll(new Label("Imagem"), imageArea);
+        return vbox;
+    }
 
-        Text intro = new Text("Criação de uma nova questão");
-        intro.setFont(new Font(25));
-        intro.setTranslateX(177);
-
-        top.setPadding(new Insets(10, 15, 10, 15));
-        top.getChildren().addAll(intro, imageArea, questionInformation);
-
-        getChildren().addAll(top, bottom);
+    private VBox createQuestionZone() {
+        VBox vbox = new VBox();
+        vbox.setId("separaton");
+        vbox.getChildren().addAll(new Label("Pergunta"), title);
+        return vbox;
     }
 
     private void inicializeBottomButtons() {
-        ImageView img1 = new ImageView(new Image("/resources/cancel.png"));
-        img1.setFitWidth(50);
-        img1.setFitHeight(50);
-        ImageView img2 = new ImageView(new Image("/resources/accept.png"));
-        img2.setFitWidth(50);
-        img2.setFitHeight(50);
-        cancel = new MenuButton("", img1);
-        confirm = new MenuButton("", img2);
-
-        confirm.setMaxSize(50, 50);
-        confirm.setMinSize(50, 50);
-        cancel.setMaxSize(50, 50);
-        cancel.setMinSize(50, 50);
-        bottom.getChildren().addAll(confirm, cancel);
-        bottom.setAlignment(Pos.CENTER);
-        bottom.setSpacing(20);
+        HBox bottom = new HBox();
+        bottom.setId("bottomCenter");
+        bottom.getChildren().add(btnConfirm);
+        setBottom(bottom);
     }
 
-    private void inicializeInformation() {
-        Label lblTitle = new Label("Pergunta: ");
-        Label lblAnswer1 = new Label("Resposta 1: ");
-        Label lblAnswer2 = new Label("Resposta 2: ");
-        Label lblAnswer3 = new Label("Resposta 3: ");
-        Label lblAnswer4 = new Label("Resposta 4: ");
-
-        questionInformation.setVgap(10);
-        questionInformation.setHgap(10);
-        questionInformation.add(lblTitle, 5, 3);
-        questionInformation.add(lblAnswer1, 5, 7);
-        questionInformation.add(lblAnswer2, 5, 10);
-        questionInformation.add(lblAnswer3, 5, 13);
-        questionInformation.add(lblAnswer4, 5, 16);
-        questionInformation.add(title, 10, 3);
-        questionInformation.add(answers.get(0), 10, 7);
-        questionInformation.add(answers.get(1), 10, 10);
-        questionInformation.add(answers.get(2), 10, 13);
-        questionInformation.add(answers.get(3), 10, 16);
+    private HBox inicializeFirstZone() {
+        HBox hbox = new HBox();
+        hbox.setId("zone");
+        hbox.getChildren().addAll(createImage(), createQuestionZone());
+        return hbox;
     }
 
-    private void inicializeRadioButton() {
+    private HBox inicializeSecondZone() {
+        HBox hbox = new HBox();
+        hbox.setId("zone");
+        hbox.getChildren().addAll(createAnswers(), createRadioButtons());
+        return hbox;
+    }
+
+    private VBox createAnswers() {
+        VBox vbox = new VBox();
+        vbox.setId("separaton");
+        vbox.getChildren().addAll(new Label("Resposta 1 "), answers.get(0), new Label("Resposta 2 "), answers.get(1),
+                new Label("Resposta 3 "), answers.get(2), new Label("Resposta 4 "), answers.get(3));
+        return vbox;
+    }
+
+    private VBox createRadioButtons() {
+        VBox vbox = new VBox();
         RadioButton boxAnswer1 = radioButtons.get(0);
         RadioButton boxAnswer2 = radioButtons.get(1);
         RadioButton boxAnswer3 = radioButtons.get(2);
         RadioButton boxAnswer4 = radioButtons.get(3);
         boxAnswer1.setToggleGroup(checks);
-        boxAnswer1.setAlignment(Pos.BOTTOM_RIGHT);
         boxAnswer2.setToggleGroup(checks);
         boxAnswer3.setToggleGroup(checks);
         boxAnswer4.setToggleGroup(checks);
-        questionInformation.add(new Label("Correta"), 12, 5);
-        questionInformation.add(new Label("Respostas"), 13, 5);
-        questionInformation.add(boxAnswer1, 12, 7);
-        questionInformation.add(boxAnswer2, 12, 10);
-        questionInformation.add(boxAnswer3, 12, 13);
-        questionInformation.add(boxAnswer4, 12, 16);
-        GridPane.setHalignment(boxAnswer1, HPos.CENTER);
-        GridPane.setHalignment(boxAnswer2, HPos.CENTER);
-        GridPane.setHalignment(boxAnswer3, HPos.CENTER);
-        GridPane.setHalignment(boxAnswer4, HPos.CENTER);
-
-    }
-
-    private void incializeTextArea() {
-        title.setMaxSize(300, 45);
-        title.setMinSize(300, 45);
-        TextArea answer1 = answers.get(0);
-        TextArea answer2 = answers.get(1);
-        TextArea answer3 = answers.get(2);
-        TextArea answer4 = answers.get(3);
-        answer1.setMaxSize(300, 40);
-        answer1.setMinSize(300, 40);
-        answer2.setMaxSize(300, 40);
-        answer2.setMinSize(300, 40);
-        answer3.setMaxSize(300, 40);
-        answer3.setMinSize(300, 40);
-        answer4.setMaxSize(300, 40);
-        answer4.setMinSize(300, 40);
-    }
-
-    private void inicializeButtons() {
-        for (int i = 0; i < 4; i++) {
-            Button btn = new Button("...");
-            btn.setMaxSize(40, 40);
-            btn.setMinSize(20, 20);
-            btnAnswer.add(btn);
-        }
-
-        questionInformation.add(btnAnswer.get(0), 13, 7);
-        questionInformation.add(btnAnswer.get(1), 13, 10);
-        questionInformation.add(btnAnswer.get(2), 13, 13);
-        questionInformation.add(btnAnswer.get(3), 13, 16);
-        GridPane.setHalignment(btnAnswer.get(0), HPos.CENTER);
-        GridPane.setHalignment(btnAnswer.get(1), HPos.CENTER);
-        GridPane.setHalignment(btnAnswer.get(2), HPos.CENTER);
-        GridPane.setHalignment(btnAnswer.get(3), HPos.CENTER);
+        VBox answersBoxs = new VBox();
+        answersBoxs.setId("radioButtons");
+        answersBoxs.getChildren().addAll(boxAnswer1, boxAnswer2, boxAnswer3, boxAnswer4);
+        vbox.getChildren().addAll(new Label("Correta "), answersBoxs);
+        return vbox;
     }
 
     private ImageView incializeImageView(String url) {
         ImageView img = new ImageView(new Image(url));
-        img.setFitWidth(200);
-        img.setFitHeight(200);
+        img.setFitWidth(145);
+        img.setFitHeight(145);
         return img;
     }
 
@@ -270,20 +229,13 @@ public class CreateQuestion extends VBox {
     }
 
     public void setTriggers(CreateQuestionPresenter presenter) {
-        cancel.setOnAction(e -> {
+        btnBack.setOnAction(e -> {
             presenter.back();
         });
 
-        confirm.setOnMouseClicked(e -> {
+        btnConfirm.setOnMouseClicked(e -> {
             presenter.createQuestion(source, createAswers(), title.getText());
         });
-
-        for (Button btn : btnAnswer) {
-            btn.setOnAction(e -> {
-                updateQuestion();
-                presenter.reuseQuestion(question);
-            });
-        }
 
     }
 
@@ -299,15 +251,15 @@ public class CreateQuestion extends VBox {
     private void updateQuestion() {
         question.setTitle(title.getText());
         question.addAnswers(createAswers());
-        question.setImageURL(source.toString());
+        question.setImageURL(source !=null ? source.toString():"resources/interrogation.png");
     }
 
     public void setTriggers(EditQuestionPresenter presenter) {
-        cancel.setOnAction(e -> {
+        btnBack.setOnAction(e -> {
             presenter.back();
         });
 
-        confirm.setOnMouseClicked(e -> {
+        btnConfirm.setOnMouseClicked(e -> {
             presenter.editQuestion(source, createAswers(), title.getText());
         });
 

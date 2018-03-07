@@ -11,7 +11,7 @@ import educationalquiz.model.Quiz;
 import educationalquiz.model.QuizManager;
 import educationalquiz.view.CreateQuestion;
 import educationalquiz.view.CreateQuiz;
-import educationalquiz.view.ListViewer;
+import educationalquiz.view.ReuseQuestion;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.CopyOption;
@@ -49,9 +49,9 @@ public class CreateQuestionPresenter {
 
     public void createQuestion( URI source, Answer[] answers, String title) {
         if (checkString(title) && checkAnswers(answers)) {
-            String url = source.toString();
+            String url = source==null ?null : source.toString();
             if (url == null || url.isEmpty()) {
-                url = "/resources/interrogation.png";
+                url = null;
             } else {
                 url = copyFile(source);
             }
@@ -113,16 +113,10 @@ public class CreateQuestionPresenter {
     }
 
     public void back() {
-        CreateQuiz view = new CreateQuiz(manager, model);
+        CreateQuiz view = new CreateQuiz( model);
         CreateQuizPresenter p = new CreateQuizPresenter(manager, view, model);
         Stage stage = (Stage) this.view.getScene().getWindow();
         stage.setScene(new Scene(view, 700, 700));
     }
 
-    public void reuseQuestion(Question question) {
-        ListViewer view = new ListViewer((HashSet<Answer>) manager.getAnswers(), question);
-        ListViewerPresenter p = new ListViewerPresenter(manager, view, model);
-        Stage stage = (Stage) this.view.getScene().getWindow();
-        stage.setScene(new Scene(view, 700, 650));
-    }
 }

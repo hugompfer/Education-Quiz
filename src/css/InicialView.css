@@ -1,0 +1,33 @@
+
+.button{
+    -fx-font-weight: bolder;
+    -fx-font-size: 22pt;   
+    -fx-background-color: #333333;
+    -fx-text-fill: white;
+    -fx-font-family:   Arial,Roboto,Helvetica, sans-serif;
+    -fx-alignment: CENTER;
+    -fx-text-transform: uppercase;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+    -fx-background-radius: 1em;  
+    -fx-pref-height:100;
+    -fx-pref-width:300;
+}
+.button:hover {
+    -fx-background-color: #F9581D ; 
+}
+
+.root{
+    -fx-background:#ECEBEB;
+}
+
+#center{
+    -fx-padding: 20 0 20 0;
+    -fx-spacing:50;
+     -fx-alignment: CENTER ;
+}
+
+
+#top{
+    -fx-alignment: CENTER ;
+    -fx-padding: 20 0 20 0;
+}

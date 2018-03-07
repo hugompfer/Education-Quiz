@@ -1,0 +1,8 @@
+
+.combo-box{
+    -fx-pref-height:50;
+    -fx-pref-width:200;
+    -fx-background-color: white;
+    -fx-border-color:gray;
+}
+

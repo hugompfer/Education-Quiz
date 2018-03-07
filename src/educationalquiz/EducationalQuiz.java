@@ -5,8 +5,14 @@
  */
 package educationalquiz;
 
+import educationalquiz.model.Answer;
+import educationalquiz.model.Question;
+import educationalquiz.model.Quiz;
 import educationalquiz.model.QuizManager;
 import educationalquiz.view.InicialView;
+import educationalquiz.view.QuizView;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -20,10 +26,15 @@ public class EducationalQuiz extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        QuizManager qm=new QuizManager();
-        
-        InicialView iw=new InicialView(qm);
-        
+        QuizManager qm = new QuizManager();
+        /*qm.addQuiz(new Quiz("fdsfs", "dffsdfsd"));
+        qm.addQuiz(new Quiz("rewrwe", "rew"));
+        qm.addQuiz(new Quiz("fdsfs", "dffsgdfgddfsd"));
+        qm.addQuiz(new Quiz("dvxcv", "fsad"));
+        qm.addQuiz(new Quiz("vx", "dgf"));
+        qm.addQuiz(new Quiz("xvxxcvx", "dg"));*/
+
+        InicialView iw = new InicialView(qm);
         Scene scene = new Scene(iw, 700, 650);
 
         primaryStage.setTitle("Educational Quiz!");

@@ -11,7 +11,7 @@ import educationalquiz.model.Quiz;
 import educationalquiz.model.QuizManager;
 import educationalquiz.view.CreateQuestion;
 import educationalquiz.view.CreateQuiz;
-import educationalquiz.view.ListViewer;
+import educationalquiz.view.ReuseQuestion;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -21,34 +21,28 @@ import javafx.stage.Stage;
  */
 public class ListViewerPresenter {
 
-    private ListViewer view;
+    private ReuseQuestion view;
     private QuizManager manager;
     private Quiz model;
 
-    public ListViewerPresenter(QuizManager manager, ListViewer view, Quiz model) {
+    public ListViewerPresenter(QuizManager manager, ReuseQuestion view, Quiz model) {
         this.manager = manager;
         this.view = view;
         this.model = model;
         view.setTriggers(this);
     }
 
-    public void back(boolean questions) {
-        if (questions) {
-            CreateQuiz view = new CreateQuiz(manager, model);
-            CreateQuizPresenter p = new CreateQuizPresenter(manager, view, model);
-            Stage stage = (Stage) this.view.getScene().getWindow();
-            stage.setScene(new Scene(view, 700, 700));
-        } else {
-            CreateQuestion view = new CreateQuestion(manager);
-            CreateQuestionPresenter p = new CreateQuestionPresenter(manager, view, model);
-            Stage stage = (Stage) this.view.getScene().getWindow();
-            stage.setScene(new Scene(view, 700, 700));
-        }
+    public void back() {
+        CreateQuiz view = new CreateQuiz( model);
+        CreateQuizPresenter p = new CreateQuizPresenter(manager, view, model);
+        Stage stage = (Stage) this.view.getScene().getWindow();
+        stage.setScene(new Scene(view, 700, 700));
+
     }
 
     public void enterQuestion(String title, Question question) {
         question.setTitle(title);
-        CreateQuestion view = new CreateQuestion(question, manager);
+        CreateQuestion view = new CreateQuestion(question);
         CreateQuestionPresenter p = new CreateQuestionPresenter(manager, view, model);
         Stage stage = (Stage) this.view.getScene().getWindow();
         stage.setScene(new Scene(view, 700, 700));
@@ -56,7 +50,7 @@ public class ListViewerPresenter {
 
     public void enterAnswer(String Information, Question question) {
         question.addAnswer(new Answer(Information, false));
-        CreateQuestion view = new CreateQuestion(question, manager);
+        CreateQuestion view = new CreateQuestion(question);
         CreateQuestionPresenter p = new CreateQuestionPresenter(manager, view, model);
         Stage stage = (Stage) this.view.getScene().getWindow();
         stage.setScene(new Scene(view, 700, 700));

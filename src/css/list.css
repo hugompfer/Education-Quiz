@@ -1,0 +1,29 @@
+
+
+.list-view{
+    -fx-max-height:320;
+    -fx-max-width:580;
+    -fx-min-height:330;
+    -fx-min-width:520;
+    -fx-border-color:gray;
+    -fx-alignment: CENTER ;
+
+}
+
+.list-view .list-cell{
+    -fx-background-color: white;
+    -fx-border-color: white white gray white;
+    -fx-pref-height:50;
+    -fx-pref-width:540;
+
+}
+
+.list-view .list-cell:filled:hover {
+    -fx-background-color: #F9581D;
+    -fx-text-fill: white;
+}
+
+.list-view .list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-background-color: #F9581D;
+    -fx-text-fill: white;
+}

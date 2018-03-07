@@ -9,6 +9,8 @@ import educationalquiz.model.Question;
 import educationalquiz.model.Quiz;
 import educationalquiz.model.QuizManager;
 import educationalquiz.presenter.*;
+import java.awt.Color;
+import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -16,182 +18,214 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 
 /**
  *
  * @author hugob
  */
-public class CreateQuiz extends VBox {
-
-    private HBox top;
-    private VBox title;
-    private GridPane quizInformation;
-    private VBox questionsArea;
+public class CreateQuiz extends BorderPane {
+    
     private ListView<Question> questionsView;
-    private TextField name;
-    private TextField categoty;
-    private Button confirm;
-    private Button cancel;
-    private Button more;
-    private HBox bottom;
-    private QuizManager manager;
+    private TextField txtName;
+    private TextField txtCategoty;
+    private Button btnConfirm;
+    private Button btnBack;
+    private Button btnAdd;
+    private Button btnEdit;
+    private Button btnDelete;
     private ComboBox cbxOptions;
-
-    public CreateQuiz(QuizManager manager) {
-        top = new HBox();
-        quizInformation = new GridPane();
-        this.manager = manager;
-        questionsArea = new VBox();
-        title = new VBox();
-        bottom = new HBox();
+    
+    public CreateQuiz() {
+        setupButtons();
         questionsView = new ListView<>();
-        name = new TextField();
-        categoty = new TextField();
-
+        txtName = new TextField();
+        txtCategoty = new TextField();
         setupLayout();
+        disableButton(true);
     }
-
-    public CreateQuiz(QuizManager manager, Quiz quiz) {
-        this(manager);
+    
+    public CreateQuiz(Quiz quiz) {
+        this();
         ObservableList<Question> observableArrayList
                 = FXCollections.observableArrayList(quiz.getQuestions());
         questionsView.setItems(observableArrayList);
-        categoty.setText(quiz.getCategory());
-        name.setText(quiz.getName());
+        txtCategoty.setText(quiz.getCategory());
+        txtName.setText(quiz.getName());
     }
-
+    
+    private void setupStyles() {
+        getStylesheets().add("css/Library.css");
+        setId("root");
+        btnAdd.setId("optionsButton");
+        btnDelete.setId("optionsButton");
+        btnEdit.setId("optionsButton");
+        btnBack.setId("btnBack");
+        btnConfirm.setId("btnConfirm");
+        questionsView.getStylesheets().add("css/list.css");
+        
+    }
+    
+    private void setupButtons() {
+        btnBack = new Button();
+        ImageView iVAdd = new ImageView(new Image("/resources/add.png"));
+        iVAdd.setId("imageViewOptionsButtons");
+        ImageView iVEdit = new ImageView(new Image("/resources/edit.png"));
+        iVEdit.setId("imageViewOptionsButtons");
+        ImageView iVDelete = new ImageView(new Image("/resources/delete.png"));
+        iVDelete.setId("imageViewOptionsButtons");
+        btnConfirm = new Button("Concluir");
+        btnAdd = new Button("", iVAdd);
+        btnEdit = new Button("", iVEdit);
+        btnDelete = new Button("", iVDelete);
+    }
+    
+    private void setupTop() {
+        Text text = new Text("Novo Quiz");
+        text.setId("title");
+        HBox hbox = new HBox();
+        hbox.setId("topBox");
+        hbox.getChildren().addAll(btnBack, text);
+        setTop(hbox);
+    }
+    
     private void setupLayout() {
+        setupStyles();
         inicializeBottomButtons();
         inicializeCenter();
-        Text intro = new Text("Criação de um novo Quiz");
-        intro.setFont(new Font(25));
-
-        Text questions = new Text("Questões: ");
-        questions.setFont(new Font(15));
-        HBox box = new HBox(questions);
-        box.setPadding(new Insets(35, 0, 0, 0));
-        Label lblQuestions = new Label("Pretende: ");
-        lblQuestions.setTranslateX(320);
-
-        box.getChildren().addAll(lblQuestions, cbxOptions);
-        title.setPadding(new Insets(5, 10, 10, 15));
-        title.getChildren().addAll(intro, quizInformation, box);
-        top.setPadding(new Insets(10, 15, 10, 15));
-        top.getChildren().addAll(title);
-        getChildren().addAll(top, questionsArea, bottom);
-
+        setupTop();
     }
-
+    
     private void inicializeCenter() {
         cbxOptions = new ComboBox();
         cbxOptions.setItems(FXCollections.observableArrayList(
                 "Reutilizar Questões", "Criar novas questões"));
-        Label lblName = new Label("Nome: ");
-        Label lblCategory = new Label("Categoria: ");
-        cbxOptions.setTranslateX(350);
-        quizInformation.setVgap(10);
-        quizInformation.setHgap(10);
-        quizInformation.add(lblName, 0, 3);
-        quizInformation.add(lblCategory, 0, 6);
-        quizInformation.add(name, 1, 3);
-        quizInformation.add(categoty, 1, 6);
-
-        name.setMaxSize(300, 25);
-        name.setMinSize(300, 25);
-        categoty.setMaxSize(300, 25);
-        categoty.setMinSize(300, 25);
-
-        questionsView.setMinSize(650, 300);
-        questionsView.setMaxSize(650, 300);
+        cbxOptions.getStylesheets().add("css/combobox.css");
+        
+        HBox buttonsBox = new HBox();
+        buttonsBox.setId("buttonsBox");
+        buttonsBox.getChildren().addAll(btnAdd, btnEdit, btnDelete);
+        
+        VBox cbxOp = new VBox();
+        cbxOp.setId("cbxOptionsBox");
+        cbxOp.getChildren().addAll(cbxOptions);
+        
+        HBox lastOptions = new HBox();
+        lastOptions.setId("optionsBoxWithCbx");
+        lastOptions.getChildren().addAll(cbxOp, buttonsBox);
+        
+        VBox txtBoxName = new VBox();
+        txtBoxName.setId("textfieldBox");
+        txtBoxName.getChildren().addAll(new Label("Nome"), txtName);
+        
+        VBox txtBoxCategory = new VBox();
+        txtBoxCategory.setId("textfieldBox");
+        txtBoxCategory.getChildren().addAll(new Label("Categoria"), txtCategoty);
+        
+        HBox textFields = new HBox();
+        textFields.setId("CategoryNameBox");
+        textFields.getChildren().addAll(txtBoxName, txtBoxCategory);
+        
+        VBox questionsArea = new VBox();
         questionsArea.setPadding(new Insets(10, 0, 0, 0));
         questionsArea.setAlignment(Pos.CENTER);
         questionsArea.getChildren().add(questionsView);
+        
+        VBox box = new VBox();
+        box.getChildren().addAll(textFields, lastOptions, questionsArea);
+        setCenter(box);
     }
-
+    
     private void inicializeBottomButtons() {
-        ImageView img1 = new ImageView(new Image("/resources/cancel.png"));
-        img1.setFitWidth(50);
-        img1.setFitHeight(50);
-        ImageView img2 = new ImageView(new Image("/resources/accept.png"));
-        img2.setFitWidth(50);
-        img2.setFitHeight(50);
-        ImageView img3 = new ImageView(new Image("/resources/more.png"));
-        img3.setFitWidth(50);
-        img3.setFitHeight(50);;
-        cancel = new MenuButton("", img1);
-        confirm = new MenuButton("", img2);
-        more = new Button("", img3);
-
-        confirm.setMaxSize(50, 50);
-        confirm.setMinSize(50, 50);
-        cancel.setMaxSize(50, 50);
-        cancel.setMinSize(50, 50);
-        more.setMaxSize(50, 50);
-        more.setMinSize(50, 50);
-
-        bottom.getChildren().addAll(more, confirm, cancel);
-        bottom.setAlignment(Pos.CENTER);
-        bottom.setSpacing(20);
-        bottom.setPadding(new Insets(20, 0, 0, 0));
-
+        HBox bottom = new HBox();
+        bottom.setId("bottom");
+        bottom.getChildren().add(btnConfirm);
+        setBottom(bottom);
     }
-
+    
+    private void disableButton(boolean disable) {
+        btnDelete.setDisable(disable);
+        btnEdit.setDisable(disable);
+    }
+    
     public void setTriggers(CreateQuizPresenter presenter) {
-        cancel.setOnAction(e -> {
+        btnBack.setOnAction(e -> {
             presenter.back();
         });
-
-        more.setOnMouseClicked(e -> {
+        
+        questionsView.setOnMouseClicked((MouseEvent event) -> {
+            disableButton(false);
+        });
+        
+        btnAdd.setOnMouseClicked(e -> {
             if (cbxOptions.getValue() != null && cbxOptions.getValue().equals("Reutilizar Questões")) {
                 presenter.reuseQuestion();
             } else {
                 presenter.createQuestion();
             }
         });
-
-        questionsView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                Question q = questionsView.getSelectionModel().getSelectedItem();
-                if (q != null) {
-                    presenter.viewQuestion(q);
-                }
-            }
+        
+        btnEdit.setOnAction(e -> {
+            Question selected = questionsView.getSelectionModel().getSelectedItem();
+            presenter.viewQuestion(selected);
         });
-
-        confirm.setOnAction(e -> {
-            presenter.createQuiz(categoty.getText(), name.getText());
+        
+        btnDelete.setOnAction(e -> {
+            Question selected = questionsView.getSelectionModel().getSelectedItem();
+            presenter.delete(selected);
         });
-
-    }
-
-    
-
+        
+        btnConfirm.setOnAction(e -> {
+            presenter.createQuiz(txtCategoty.getText(), txtName.getText());
+        });
+   
+    } 
+   
     public String getName() {
-        return name.getText();
+        return txtName.getText();
     }
-
+    
     public String getCategory() {
-        return categoty.getText();
+        return txtCategoty.getText();
     }
-
+    
     public void showInfo(String info) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Verificação");
         alert.setHeaderText("Criação/Edição de um quiz");
         alert.setContentText(info);
+        alert.show();
+    }
+    
+    public boolean showConfirmation(String info) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmação");
+        alert.setHeaderText("Eliminação de uma questão");
+        alert.setContentText("Tem a certeza que pretende eliminar o questão: " + info);
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.get() == ButtonType.OK;
+    }
+    
+    public void showInfo() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Informação");
+        alert.setHeaderText("Eliminação de uma questão");
+        alert.setContentText("Questão eliminada com sucesso!");
         alert.show();
     }
 }

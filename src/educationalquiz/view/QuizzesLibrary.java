@@ -8,10 +8,14 @@ package educationalquiz.view;
 import educationalquiz.model.Quiz;
 import educationalquiz.model.QuizManager;
 import educationalquiz.presenter.QuizzesLibraryPresenter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -19,16 +23,21 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.collections.transformation.FilteredList;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseButton;
 
 /**
  *
@@ -36,122 +45,129 @@ import javafx.scene.text.Text;
  */
 public class QuizzesLibrary extends BorderPane {
 
-    private ScrollPane scrollPane;
-    private FlowPane flow;
-    private HBox bottom;
-    private VBox center;
+    private ListView<Quiz> quizzesList;
     private Button btnBack;
-    private QuizManager manager;
-    private HashMap<Quiz, Button> quizes;
-    private ComboBox cbxOptions;
+    private Button btnView;
+    private Button btnEdit;
+    private Button btnDelete;
+    private TextField filter;
 
-    public QuizzesLibrary(QuizManager manager) {
-        flow = new FlowPane();
-        scrollPane = new ScrollPane();
-        bottom = new HBox();
-        center = new VBox();
-        this.manager = manager;
-        quizes = new HashMap<>();
+    public QuizzesLibrary(List<Quiz> quizzes) {
+        setupButtons();
+        filter = new TextField();
+        quizzesList = new ListView<>(inicializeFilteredList(quizzes));
+        quizzesList.setPlaceholder(new Label("Nenhum quiz disponível"));
+        disableButton(true);
         setupLayout();
+    }
+
+    private FilteredList inicializeFilteredList(List<Quiz> quizzes) {
+        ObservableList<Quiz> data = FXCollections.observableArrayList(quizzes);
+        FilteredList<Quiz> filteredData = new FilteredList<>(data, s -> true);
+        filter.textProperty().addListener(obs -> {
+            String f = filter.getText();
+            if (f == null || f.length() == 0) {
+                filteredData.setPredicate(s -> true);
+            } else {
+                filteredData.setPredicate(s -> s.containsCategory(f) || s.containsName(f) || s.containsAll(f));
+            }
+        });
+        return filteredData;
     }
 
     private void setupLayout() {
         setupTop();
         setupCenter();
-        setupBottom();
-        setPadding(new Insets(10, 10, 10, 10));
+        setupStyles();
+    }
 
+    private void setupStyles() {
+        getStylesheets().add("css/Library.css");
+        setId("root");
+        btnView.setId("optionsButton");
+        btnDelete.setId("optionsButton");
+        btnEdit.setId("optionsButton");
+        filter.setId("txtFilter");
+        quizzesList.getStylesheets().add("css/list.css");
     }
 
     private void setupTop() {
-        Text text = new Text("Biblioteca de Quizs");
-        text.setFont(Font.font(20));
-        HBox hbox = new HBox(text);
-        hbox.setAlignment(Pos.CENTER);
-        hbox.setPadding(new Insets(10, 0, 20, 0));
+        Text text = new Text("BIBLIOTECA DE QUIZZES");
+        text.setId("title");
+        HBox hbox = new HBox();
+        hbox.setId("topBox");
+        hbox.getChildren().addAll(btnBack, text);
         setTop(hbox);
     }
 
     private void setupCenter() {
-        setupInformation();
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);    // Horizontal scroll bar
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);    // Vertical scroll bar
-        scrollPane.setContent(flow);
-        scrollPane.setPadding(new Insets(5, 5, 5, 5));
-        scrollPane.setMaxSize(560, 450);
-        scrollPane.setMinSize(560, 450);
-        flow.setPadding(new Insets(5, 5, 5, 5));
-        flow.setVgap(20);
-        flow.setHgap(10);
-        flow.setAlignment(Pos.TOP_LEFT);
-        flow.setMinWidth(550);
-
-        for (Quiz q : manager.getQuizzes()) {
-            Button btn = generateButton(q);
-            quizes.put(q, btn);
-            flow.getChildren().add(btn);
-        }
-        center.getChildren().add(scrollPane);
-
-        center.setPadding(new Insets(5, 5, 5, 5));
-        center.setSpacing(10);
-        center.setAlignment(Pos.CENTER);
+        HBox box = setupInformation();
+        VBox center = new VBox();
+        center.setId("center");
+        center.getChildren().addAll(box, quizzesList);
         setCenter(center);
     }
 
-    private void setupInformation() {
-        Label lblQuestions = new Label("Pretende: ");
-        cbxOptions = new ComboBox();
-        cbxOptions.setItems(FXCollections.observableArrayList(
-                "Visualizar Quiz", "Editar Quiz", "Eliminar Quiz"));
-        cbxOptions.setPadding(new Insets(5, 5, 5, 5));
-        lblQuestions.setPadding(new Insets(5, 5, 5, 50));
+    private HBox setupInformation() {
+        HBox buttonsBox = new HBox();
+        buttonsBox.setId("buttonsBox");
+        buttonsBox.getChildren().addAll(btnView, btnEdit, btnDelete);
+
+        VBox txtBox = new VBox();
+        txtBox.setId("textfieldBox");
+        txtBox.getChildren().addAll(new Label("Pesquisar quiz"), filter);
+
         HBox box = new HBox();
-        box.getChildren().addAll(lblQuestions, cbxOptions);
-        center.getChildren().add(box);
+        box.setId("optionsBox");
+        box.getChildren().addAll(txtBox, buttonsBox);
+        return box;
     }
 
-    private void setupBottom() {
-        ImageView img1 = new ImageView(new Image("/resources/back.png"));
-        img1.setFitWidth(50);
-        img1.setFitHeight(50);
-        btnBack = new Button("", img1);
-        bottom.getChildren().add(btnBack);
-        bottom.setAlignment(Pos.CENTER);
-        bottom.setPadding(new Insets(10, 0, 0, 0));
-        setBottom(bottom);
+    private void setupButtons() {
+        btnBack = new Button();
+        btnBack.setId("btnBack");
+        ImageView iVAdd = new ImageView(new Image("/resources/eye.png"));
+        iVAdd.setId("imageViewOptionsButtons");
+        ImageView iVEdit = new ImageView(new Image("/resources/edit.png"));
+        iVEdit.setId("imageViewOptionsButtons");
+        ImageView iVDelete = new ImageView(new Image("/resources/delete.png"));
+        iVDelete.setId("imageViewOptionsButtons");
+        btnView = new Button("", iVAdd);
+        btnEdit = new Button("", iVEdit);
+        btnDelete = new Button("", iVDelete);
     }
 
-    private Button generateButton(Quiz q) {
-        Button btn = new Button(q.getCategory());
-        btn.setMinWidth(100);
-        btn.setMinHeight(100);
-        btn.setMaxWidth(100);
-        btn.setMaxHeight(100);
-        Tooltip tt = new Tooltip(q.getName());
-        btn.setTooltip(tt);
-        tt.setStyle("-fx-background-color: white;"
-                + "-fx-text-fill: black;");
-        return btn;
+    private void disableButton(boolean disable) {
+        btnDelete.setDisable(disable);
+        btnEdit.setDisable(disable);
+        btnView.setDisable(disable);
     }
 
     public void setTriggers(QuizzesLibraryPresenter presenter) {
-        btnBack.setOnAction(e -> {
+
+        btnBack.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
             presenter.back();
         });
 
-        for (Map.Entry<Quiz, Button> node : quizes.entrySet()) {
-            node.getValue().setOnAction(e -> {
-                if (cbxOptions.getValue() != null && cbxOptions.getValue().equals("Eliminar Quiz")) {
-                    presenter.delete(node.getKey());
-                } else if (cbxOptions.getValue() != null && cbxOptions.getValue().equals("Editar Quiz")) {
-                    presenter.edit(node.getKey());
-                } else {
-                    presenter.enter(node.getKey());
-                }
+        quizzesList.setOnMouseClicked((MouseEvent event) -> {
+            disableButton(false);
+        });
 
-            });
-        }
+        btnView.setOnAction(e -> {
+            Quiz selected = quizzesList.getSelectionModel().getSelectedItem();
+            presenter.enter(selected);
+        });
+
+        btnEdit.setOnAction(e -> {
+            Quiz selected = quizzesList.getSelectionModel().getSelectedItem();
+            presenter.edit(selected);
+        });
+
+        btnDelete.setOnAction(e -> {
+            Quiz selected = quizzesList.getSelectionModel().getSelectedItem();
+            presenter.delete(selected);
+        });
+
     }
 
     public boolean showConfirmation(String info) {
@@ -169,10 +185,6 @@ public class QuizzesLibrary extends BorderPane {
         alert.setHeaderText("Eliminação de um Quiz");
         alert.setContentText("Quiz eliminado com sucesso!");
         alert.show();
-    }
-
-    public void refresh(Quiz q) {
-        quizes.remove(q);
     }
 
 }
