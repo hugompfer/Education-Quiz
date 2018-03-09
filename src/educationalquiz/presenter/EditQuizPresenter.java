@@ -21,11 +21,11 @@ public class EditQuizPresenter extends CreateQuizPresenter {
         super(manager, view, model);
     }
 
-    @Override
-    public void createQuiz(String category, String name) {
+    
+    public void editQuiz(Quiz quiz,String category, String name) {
         if (!(category.isEmpty() && name.isEmpty())) {
-            super.getModel().setCategory(category);
-            super.getModel().setName(name);
+            
+            getManager().updateQuiz(quiz,category,category);
             back();
         }
     }

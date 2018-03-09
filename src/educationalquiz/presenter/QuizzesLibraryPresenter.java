@@ -32,13 +32,14 @@ public class QuizzesLibraryPresenter {
 
     public void back() {
         Stage stage = (Stage) view.getScene().getWindow();
-        stage.setScene(new Scene(new InicialView(manager), 700, 700));
+        stage.setScene(new Scene(new InicialView(), 700, 700));
     }
 
     public void delete(Quiz quiz) {
         if (quiz != null) {
             if (view.showConfirmation(quiz.getCategory() + " - " + quiz.getName())) {
                 if (manager.removeQuiz(quiz)) {
+                    
                     view.showInfo();
                     refresh();
                 }
@@ -65,7 +66,7 @@ public class QuizzesLibraryPresenter {
 
     public void edit(Quiz selected) {
         if (selected != null) {
-            CreateQuiz view = new CreateQuiz(selected);
+            CreateQuiz view = new CreateQuiz(selected,true);
             EditQuizPresenter p = new EditQuizPresenter(manager, view, selected);
             Stage stage = (Stage) this.view.getScene().getWindow();
             stage.setScene(new Scene(view, 700, 700));

@@ -7,7 +7,6 @@ package educationalquiz.view;
 
 import educationalquiz.model.Answer;
 import educationalquiz.model.Question;
-import educationalquiz.model.QuizManager;
 import educationalquiz.presenter.CreateQuestionPresenter;
 import educationalquiz.presenter.EditQuestionPresenter;
 import java.io.File;
@@ -18,7 +17,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -29,7 +27,7 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 
 /**
- *
+ *  
  * @author hugob
  */
 public class CreateQuestion extends BorderPane {
@@ -44,7 +42,8 @@ public class CreateQuestion extends BorderPane {
     private Button btnConfirm;
     private Button btnBack;
     private Question question;
-
+    
+    
     public CreateQuestion() {
         imageArea = new VBox();
         image = new ImageView();
@@ -61,6 +60,7 @@ public class CreateQuestion extends BorderPane {
         this();
         this.question = question;
         setupQuestionLayout();
+        setupTop();
     }
 
     public CreateQuestion(String title) {
@@ -81,9 +81,10 @@ public class CreateQuestion extends BorderPane {
             i++;
         }
         String str = question.getImageURL();
-        image = incializeImageView(str != null ? str : "/resources/interrogation.png");
+        image = incializeImageView(str != null ? str : "resources/interrogation.png");
         imageArea.getChildren().clear();
         imageArea.getChildren().add(image);
+
     }
 
     private ArrayList<TextArea> inicializeAnswers() {
@@ -91,6 +92,7 @@ public class CreateQuestion extends BorderPane {
         for (int i = 0; i < 4; i++) {
             TextArea tf = new TextArea();
             tf.setId("textFieldAnswer");
+            tf.setWrapText(true);
             textFields.add(tf);
         }
         return textFields;
@@ -105,7 +107,7 @@ public class CreateQuestion extends BorderPane {
     }
 
     private void setupTop() {
-        Text text = new Text("Nova Questão");
+        Text text = new Text(question == null ? "Nova Questão" : "Edição de Questão");
         text.setId("title");
         HBox hbox = new HBox();
         hbox.setId("topBox");
@@ -123,9 +125,12 @@ public class CreateQuestion extends BorderPane {
         setId("root");
         btnBack.setId("btnBack");
         btnConfirm.setId("btnConfirm");
+        title.setWrapText(true);
+        title.setStyle("-fx-font-size: 15px;");
     }
 
     private void setupLayout() {
+
         setupButtons();
         setupStyles();
         setupTop();
@@ -140,7 +145,8 @@ public class CreateQuestion extends BorderPane {
 
     private VBox createImage() {
         VBox vbox = new VBox();
-        image = incializeImageView("/resources/interrogation.png");
+        String url = question != null ? question.getImageURL() : null;
+        image = incializeImageView(url != null ? url : "resources/interrogation.png");
         imageArea.getChildren().add(image);
         imageArea.setId("imageArea");
         vbox.setId("separaton");
@@ -202,6 +208,13 @@ public class CreateQuestion extends BorderPane {
     }
 
     private ImageView incializeImageView(String url) {
+        ImageView img = new ImageView(new Image("file:///" + new File(url).getAbsolutePath()));
+        img.setFitWidth(145);
+        img.setFitHeight(145);
+        return img;
+    }
+    
+    private ImageView incializeImageViewWithAbsolutePath(String url) {
         ImageView img = new ImageView(new Image(url));
         img.setFitWidth(145);
         img.setFitHeight(145);
@@ -220,7 +233,7 @@ public class CreateQuestion extends BorderPane {
                 URI url = file.toURI();
                 if (url != null && !url.toString().isEmpty()) {
                     imageArea.getChildren().remove(image);
-                    image = incializeImageView(url.toString());
+                    image = incializeImageViewWithAbsolutePath(url.toString());
                     imageArea.getChildren().add(image);
                     this.source = url;
                 }
@@ -248,18 +261,13 @@ public class CreateQuestion extends BorderPane {
         return answers;
     }
 
-    private void updateQuestion() {
-        question.setTitle(title.getText());
-        question.addAnswers(createAswers());
-        question.setImageURL(source !=null ? source.toString():"resources/interrogation.png");
-    }
-
     public void setTriggers(EditQuestionPresenter presenter) {
         btnBack.setOnAction(e -> {
             presenter.back();
         });
 
         btnConfirm.setOnMouseClicked(e -> {
+            source = source == null && question.getImageURL() != null ? new File(question.getImageURL()).toURI() : source;
             presenter.editQuestion(source, createAswers(), title.getText());
         });
 

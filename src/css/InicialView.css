@@ -9,11 +9,11 @@
     -fx-text-transform: uppercase;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
     -fx-background-radius: 1em;  
-    -fx-pref-height:100;
-    -fx-pref-width:300;
+    -fx-pref-height:90;
+    -fx-pref-width:270;
 }
 .button:hover {
-    -fx-background-color: #F9581D ; 
+    -fx-background-color: #fb7178 ; 
 }
 
 .root{
@@ -21,8 +21,8 @@
 }
 
 #center{
-    -fx-padding: 20 0 20 0;
-    -fx-spacing:50;
+    -fx-padding: 30 0 20 0;
+    -fx-spacing:40;
      -fx-alignment: CENTER ;
 }
 

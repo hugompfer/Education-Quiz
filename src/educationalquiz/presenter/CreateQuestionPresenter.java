@@ -28,6 +28,8 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.nio.file.*;
 
 /**
@@ -39,17 +41,22 @@ public class CreateQuestionPresenter {
     private CreateQuestion view;
     private QuizManager manager;
     private Quiz model;
-
-    public CreateQuestionPresenter(QuizManager manager, CreateQuestion view, Quiz model) {
+    private String updateCategory;
+    private String updateName;
+    private boolean edit;
+    public CreateQuestionPresenter(QuizManager manager, CreateQuestion view, Quiz model, String updateCategory, String updateName,boolean edit) {
         this.manager = manager;
         this.view = view;
         this.model = model;
+        this.updateCategory=updateCategory;
+        this.updateName=updateName;
+        this.edit=edit;
         view.setTriggers(this);
     }
 
-    public void createQuestion( URI source, Answer[] answers, String title) {
+    public void createQuestion(URI source, Answer[] answers, String title) {
         if (checkString(title) && checkAnswers(answers)) {
-            String url = source==null ?null : source.toString();
+            String url = source == null ? null : source.toString();
             if (url == null || url.isEmpty()) {
                 url = null;
             } else {
@@ -66,33 +73,21 @@ public class CreateQuestionPresenter {
     }
 
     public String copyFile(URI sourc) {
-        File source=new File(sourc);
-        File target=(new File(new File("src/images/").getAbsolutePath()+"/"+source.getName()));
-        
+        File source = new File(sourc);
+        File target = (new File(new File("images/").getAbsolutePath() + "/" + source.getName()));
+
         Path sourceFile = Paths.get(source.toURI());
         Path targetFile = Paths.get(target.toURI());
         try {
             Files.copy(sourceFile, targetFile,
                     StandardCopyOption.REPLACE_EXISTING);
-          
-            return "/images/"+target.getName();
+
+            return "images/" + target.getName();
         } catch (IOException ex) {
             view.showInfo("Houve um problema a copiar a imagem.");
             return "/resources/interrogation.png";
         }
 
-    }
-
-    private Path toPath(String url) {
-        Path path = null;
-        try {
-            URI uri = ClassLoader.getSystemResource(url).toURI();
-            String mainPath = Paths.get(uri).toString();
-            path = Paths.get(mainPath);
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(CreateQuestionPresenter.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return path;
     }
 
     private boolean checkString(String info) {
@@ -113,7 +108,7 @@ public class CreateQuestionPresenter {
     }
 
     public void back() {
-        CreateQuiz view = new CreateQuiz( model);
+        CreateQuiz view = new CreateQuiz(model,updateCategory,updateName,edit);
         CreateQuizPresenter p = new CreateQuizPresenter(manager, view, model);
         Stage stage = (Stage) this.view.getScene().getWindow();
         stage.setScene(new Scene(view, 700, 700));

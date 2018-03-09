@@ -7,7 +7,7 @@
     -fx-min-width:520;
     -fx-border-color:gray;
     -fx-alignment: CENTER ;
-
+    -fx-font-size: 11pt;  
 }
 
 .list-view .list-cell{
@@ -19,11 +19,12 @@
 }
 
 .list-view .list-cell:filled:hover {
-    -fx-background-color: #F9581D;
+    -fx-background-color: #fb7178;
     -fx-text-fill: white;
 }
 
 .list-view .list-cell:filled:selected:focused, .list-cell:filled:selected {
-    -fx-background-color: #F9581D;
+    -fx-background-color: #fb7178;
     -fx-text-fill: white;
 }
+

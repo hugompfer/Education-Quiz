@@ -35,12 +35,12 @@ import javafx.scene.text.Text;
  */
 public class ReuseQuestion extends BorderPane {
 
-    private ListView<Question> listQuestion;
+    private ListView<String> listQuestion;
     private TextField filter;
     private Button btnBack;
     private Question question;
 
-    public ReuseQuestion(Set<Question> listQuestions, Question question) {
+    public ReuseQuestion(Set<String> listQuestions, Question question) {
         filter = new TextField();
         listQuestion = new ListView<>(inicializeFilteredList(listQuestions));
         listQuestion.setPlaceholder(new Label("Nenhuma pergunta disponível"));
@@ -49,15 +49,15 @@ public class ReuseQuestion extends BorderPane {
         setupLayout();
     }
 
-    private FilteredList inicializeFilteredList(Set<Question> listQuestions) {
-        ObservableList<Question> data = FXCollections.observableArrayList(new ArrayList<>(listQuestions));
-        FilteredList<Question> filteredData = new FilteredList<>(data, s -> true);
+    private FilteredList inicializeFilteredList(Set<String> listQuestions) {
+        ObservableList<String> data = FXCollections.observableArrayList(new ArrayList<>(listQuestions));
+        FilteredList<String> filteredData = new FilteredList<>(data, s -> true);
         filter.textProperty().addListener(obs -> {
             String f = filter.getText();
             if (f == null || f.length() == 0) {
                 filteredData.setPredicate(s -> true);
             } else {
-                filteredData.setPredicate(s -> s.containsTitle(f));
+                filteredData.setPredicate(s -> s.contains(f));
             }
         });
         return filteredData;
@@ -68,6 +68,7 @@ public class ReuseQuestion extends BorderPane {
         setId("root");
         btnBack.setId("btnBack");
         filter.setId("txtFilter");
+        listQuestion.getStylesheets().add("css/list.css");
     }
 
     private void setupLayout() {
@@ -109,7 +110,7 @@ public class ReuseQuestion extends BorderPane {
 
         listQuestion.setOnMouseClicked((MouseEvent event) -> {
             if (listQuestion.getSelectionModel().getSelectedItem() != null) {
-                presenter.enterQuestion(listQuestion.getSelectionModel().getSelectedItem().getTitle(), question);
+                presenter.enterQuestion(listQuestion.getSelectionModel().getSelectedItem(), question);
             }
         });
 

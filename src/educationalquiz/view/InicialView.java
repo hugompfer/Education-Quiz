@@ -9,8 +9,6 @@ import educationalquiz.model.Quiz;
 import educationalquiz.model.QuizManager;
 import educationalquiz.presenter.CreateQuizPresenter;
 import educationalquiz.presenter.QuizzesLibraryPresenter;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -29,11 +27,11 @@ public class InicialView extends VBox {
     private Button btnNewQuiz;
     private QuizManager manager;
 
-    public InicialView(QuizManager manager) {
+    public InicialView() {
 
-        btnLibrary = new Button("MEUS QUIZES");
+        btnLibrary = new Button("MEUS QUIZZES");
         btnNewQuiz = new Button("NOVO QUIZ");
-        this.manager = manager;
+        this.manager = new QuizManager();
         setupLayout();
         setupBehaviour();
         setupStyles();
@@ -48,15 +46,15 @@ public class InicialView extends VBox {
     private void setupLayout() {
 
         VBox center = new VBox();
-        center.getChildren().addAll(btnNewQuiz,btnLibrary);
+        center.getChildren().addAll(btnNewQuiz, btnLibrary);
         center.setId("center");
         getChildren().addAll(inicializeTop(), center);
     }
 
     private HBox inicializeTop() {
-        ImageView img = new ImageView(new Image("/resources/interrogation.png"));
-        img.setFitWidth(150);
-        img.setFitHeight(150);
+        ImageView img = new ImageView(new Image("/resources/logo.png"));
+        img.setFitWidth(200);
+        img.setFitHeight(200);
         HBox top = new HBox();
         top.getChildren().add(img);
         top.setId("top");
@@ -73,11 +71,12 @@ public class InicialView extends VBox {
         );
 
         btnNewQuiz.setOnAction(e -> {
-            CreateQuiz view = new CreateQuiz();
+            CreateQuiz view = new CreateQuiz(false);
             CreateQuizPresenter p = new CreateQuizPresenter(manager, view, new Quiz());
             Stage stage = (Stage) getScene().getWindow();
             stage.setScene(new Scene(view, 700, 700));
         }
         );
+
     }
 }

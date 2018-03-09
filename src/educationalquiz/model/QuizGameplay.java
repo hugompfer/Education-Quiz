@@ -6,7 +6,7 @@
 package educationalquiz.model;
 
 /**
- *
+ * Represents the logical quiz gameplay
  * @author hugob
  */
 public class QuizGameplay {
@@ -14,18 +14,32 @@ public class QuizGameplay {
     private Quiz quiz;
     private int position;
 
+    /**
+     * Create a QuizGameplay with the quiz information
+     *
+     */
     public QuizGameplay(Quiz quiz) {
         this.quiz = quiz;
         this.position = 0;
     }
 
+    /**
+     * Returns the next question if exists
+     *
+     * @return Question if exists/null opposite
+     */
     public Question nextQuestion() {
-        if ((position + 1) > quiz.numberOfQuestions() - 1) {
+        if ((position + 1) > quiz.getNumberOfQuestions() - 1) {
             return null;
         }
         return quiz.getQuestion(++position);
     }
 
+    /**
+     * Returns the previous question if exists
+     *
+     * @return Question if exists/null opposite
+     */
     public Question previousQuestion() {
 
         if ((position - 1) < 0) {
@@ -34,6 +48,11 @@ public class QuizGameplay {
         return quiz.getQuestion(--position);
     }
 
+    /**
+     * Returns the atual question 
+     *
+     * @return atual question
+     */
     public Question getAtualQuestion() {
         return quiz.getQuestion(position);
     }

@@ -31,12 +31,18 @@ public class EditQuestionPresenter {
     private QuizManager manager;
     private Quiz model;
     private Question question;
-
-    public EditQuestionPresenter(QuizManager manager, CreateQuestion view, Quiz model, Question question) {
+    private String updateCategory;
+    private String updateName;
+    private boolean edit;
+            
+    public EditQuestionPresenter(QuizManager manager, CreateQuestion view, Quiz model, Question question,String updateCategory,String updateName,boolean edit) {
         this.manager = manager;
         this.view = view;
         this.model = model;
         this.question = question;
+        this.updateName=updateName;
+        this.updateCategory=updateCategory;
+        this.edit=edit;
         view.setTriggers(this);
     }
 
@@ -59,7 +65,7 @@ public class EditQuestionPresenter {
 
     public String copyFile(URI sourc) {
         File source = new File(sourc);
-        File target = (new File(new File("src/images/").getAbsolutePath() + "/" + source.getName()));
+        File target = (new File(new File("images/").getAbsolutePath() + "/" + source.getName()));
 
         Path sourceFile = Paths.get(source.toURI());
         Path targetFile = Paths.get(target.toURI());
@@ -67,7 +73,7 @@ public class EditQuestionPresenter {
             Files.copy(sourceFile, targetFile,
                     StandardCopyOption.REPLACE_EXISTING);
 
-            return "/images/" + target.getName();
+            return "images/" + target.getName();
         } catch (IOException ex) {
             view.showInfo("Houve um problema a copiar a imagem.");
             return "/resources/interrogation.png";
@@ -93,7 +99,7 @@ public class EditQuestionPresenter {
     }
 
     public void back() {
-        CreateQuiz view = new CreateQuiz( model);
+        CreateQuiz view = new CreateQuiz(model,updateCategory,updateName,edit);
         EditQuizPresenter p = new EditQuizPresenter(manager, view, model);
         Stage stage = (Stage) this.view.getScene().getWindow();
         stage.setScene(new Scene(view, 700, 700));

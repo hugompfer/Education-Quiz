@@ -1,5 +1,8 @@
 #root{  
-    -fx-background-color: white;
+    -fx-background-image:url("/resources/math.png");
+    -fx-background-position:  center; 
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 100% 100%;
 }
 
 #btnBack{
@@ -18,15 +21,16 @@
 }
 
 
-.button{
-    -fx-pref-height:100;
-    -fx-pref-width:300;
+#button{
+    -fx-pref-height:90;
+    -fx-pref-width:250;
     -fx-font-size:15;
     -fx-font-weight:bolder;
-    -fx-background-radius: 0.5em; 
-    -fx-background-color: #BED4FF;
-    -fx-border-radius:0.5em;
-    -fx-border-background:black;
+    -fx-background-color: #E6EFF3;
+   
+    -fx-border-color: black;
+    -fx-background-radius: 5.0;
+    -fx-border-radius: 5.0
 }
 
 .button:hover {
@@ -43,6 +47,7 @@
 #questionArea{
     -fx-padding: 10 10 20 10;
     -fx-alignment: CENTER ;
+    -fx-spacing:50;
 }
 
 #gridPane{
@@ -59,3 +64,8 @@
     -fx-font-size: 24px; 
     -fx-text-alignment: CENTER ;
 }
+
+.image-view:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+

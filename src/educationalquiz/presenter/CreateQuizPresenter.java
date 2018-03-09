@@ -46,31 +46,24 @@ public class CreateQuizPresenter {
     }
 
     public void createQuestion() {
-        updateQuiz();
         CreateQuestion view = new CreateQuestion();
-        CreateQuestionPresenter p = new CreateQuestionPresenter(manager, view, model);
+        CreateQuestionPresenter p = new CreateQuestionPresenter(manager, view, model,this.view.getCategory(),this.view.getName(),this.view.isEdit());
         Stage stage = (Stage) this.view.getScene().getWindow();
         stage.setScene(new Scene(view, 700, 700));
     }
 
-    private void updateQuiz() {
-        model.setCategory(view.getCategory());
-        model.setName(view.getName());
-    }
 
     public void reuseQuestion() {
-        updateQuiz();
-        ReuseQuestion view = new ReuseQuestion(manager.getQuestions(), new Question());
-        ListViewerPresenter p = new ListViewerPresenter(manager, view, model);
+        ReuseQuestion view = new ReuseQuestion(manager.getQuestionsTitle(), new Question());
+        ListViewerPresenter p = new ListViewerPresenter(manager, view, model,this.view.getCategory(),this.view.getName(),this.view.isEdit());
         Stage stage = (Stage) this.view.getScene().getWindow();
         stage.setScene(new Scene(view, 700, 650));
     }
 
     public void viewQuestion(Question selected) {
-        if (selected != null) {
-            updateQuiz();
+        if (selected != null) { 
             CreateQuestion view = new CreateQuestion(selected);
-            EditQuestionPresenter p = new EditQuestionPresenter(manager, view, model, selected);
+            EditQuestionPresenter p = new EditQuestionPresenter(manager, view, model, selected, this.view.getCategory(),this.view.getName(),this.view.isEdit());
             Stage stage = (Stage) this.view.getScene().getWindow();
             stage.setScene(new Scene(view, 700, 700));
         }
@@ -78,11 +71,11 @@ public class CreateQuizPresenter {
 
     public void back() {
         Stage stage = (Stage) view.getScene().getWindow();
-        stage.setScene(new Scene(new InicialView(manager), 700, 700));
+        stage.setScene(new Scene(new InicialView(), 700, 700));
     }
 
-    public Quiz getModel() {
-        return model;
+    public QuizManager getManager() {
+        return manager;
     }
 
     public void delete(Question selected) {
@@ -94,11 +87,10 @@ public class CreateQuizPresenter {
                 }
             }
         }
-
     }
 
     private void refresh() {
-        CreateQuiz view = new CreateQuiz(model);
+        CreateQuiz view = new CreateQuiz(model,this.view.getCategory(),this.view.getName(),this.view.isEdit());
         CreateQuizPresenter p = new CreateQuizPresenter(manager, view, model);
         Stage stage = (Stage) this.view.getScene().getWindow();
         stage.setScene(new Scene(view, 700, 700));

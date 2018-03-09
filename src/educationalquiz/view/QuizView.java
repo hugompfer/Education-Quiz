@@ -11,6 +11,7 @@ import educationalquiz.model.Quiz;
 import educationalquiz.model.QuizGameplay;
 import educationalquiz.model.Sound;
 import educationalquiz.presenter.QuizViewPresenter;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,7 @@ import javafx.scene.text.TextAlignment;
  * @author hugob
  */
 public class QuizView extends BorderPane {
-
+    
     private List<Button> answers;
     private Text questionTitle;
     private ImageView next;
@@ -48,7 +49,8 @@ public class QuizView extends BorderPane {
     private Button btnBack;
     private HBox bottom;
     private ImageView image;
-;
+
+    ;
 
     public QuizView(QuizGameplay q) {
         answers = new ArrayList<>();
@@ -59,66 +61,67 @@ public class QuizView extends BorderPane {
         inicializeButtons(q);
         setupLayout(q);
     }
-
+    
     private void setupStyles() {
         getStylesheets().add("css/Quiz.css");
         setId("root");
         btnBack.setId("btnBack");
         questionTitle.setId("questionTitle");
     }
-
+    
     private void setupLayout(QuizGameplay q) {
         setupTop(q);
         setCenter(setupCenter(q.getAtualQuestion()));
         setupStyles();
     }
-
+    
     private void setupTop(QuizGameplay quiz) {
-        Text text = new Text(quiz.getQuizCategory()+ " - " + quiz.getQuizName());
+        Text text = new Text(quiz.getQuizCategory() + " - " + quiz.getQuizName());
         text.setId("title");
         HBox hbox = new HBox();
         hbox.setId("topBox");
         hbox.getChildren().addAll(btnBack, text);
-
+        
         HBox title = setupQuestionTitle(quiz.getAtualQuestion());
-
+        
         VBox vbox = new VBox();
         vbox.getChildren().addAll(hbox, title);
         setTop(vbox);
     }
-
+    
     private HBox setupQuestionTitle(Question question) {
         next = new ImageView(new Image("/resources/next.png"));
         next.setFitWidth(50);
         next.setFitHeight(50);
-
+        
         prev = new ImageView(new Image("/resources/prev.png"));
         prev.setFitWidth(50);
         prev.setFitHeight(50);
-
+        
         questionTitle = new Text();
         questionTitle.setText(question.getTitle());
-        questionTitle.setWrappingWidth(570);
-
+        questionTitle.setWrappingWidth(400);
+        
         HBox questionTitleArea = new HBox();
         questionTitleArea.setId("questionArea");
         questionTitleArea.getChildren().addAll(prev, questionTitle, next);
-
+        
         return questionTitleArea;
-
+        
     }
-
+    
     private VBox setupImageArea(String s) {
         VBox imageArea = new VBox();
-        image = new ImageView(new Image(getClass().getResource(s).toExternalForm()));
+        image = new ImageView(new Image("file:///" + new File(s).getAbsolutePath()));
         image.setFitWidth(200);
         image.setFitHeight(200);
         image.setPreserveRatio(true);
+        image.getStyleClass().clear();
         imageArea.setAlignment(Pos.CENTER);
         imageArea.getChildren().add(image);
         return imageArea;
     }
-
+    
     private VBox setupCenter(Question question) {
         GridPane informationQuestion = new GridPane();
         informationQuestion.setId("gridPane");
@@ -127,55 +130,56 @@ public class QuizView extends BorderPane {
         informationQuestion.add(answers.get(2), 1, 3);
         informationQuestion.add(answers.get(3), 3, 3);
         informationQuestion.setAlignment(Pos.CENTER);
-
+        
         VBox questionArea = new VBox();
         String s = question.getImageURL();
         if (s != null) {
             questionArea.getChildren().addAll(setupImageArea(s), informationQuestion);
-
+            
         } else {
             questionArea.getChildren().addAll(informationQuestion);
             questionArea.setPadding(new Insets(60, 0, 0, 0));
         }
         return questionArea;
     }
-
+    
     private void incializeCorrespondence(Question question) {
         btnAnswersCorrespondence.clear();
         int i = 0;
         for (Answer answer : question.getAnswers()) {
             btnAnswersCorrespondence.put(answers.get(i++), answer);
         }
-
+        
     }
-
+    
     private void inicializeButtons(QuizGameplay q) {
         for (String answer : q.getAtualQuestion().getAnswersInformation()) {
             Button btn = new Button(answer);
+            btn.setId("button");
             btn.wrapTextProperty().setValue(true);
             answers.add(btn);
         }
         incializeCorrespondence(q.getAtualQuestion());
     }
-
+    
     public void setupQuestionLayout(Question question) {
         resetButtons();
         int index = 0;
         for (String answer : question.getAnswersInformation()) {
             answers.get(index++).setText(answer);
         }
-       
+        
         questionTitle.setText(question.getTitle());
         incializeCorrespondence(question);
         setCenter(setupCenter(question));
     }
-
+    
     private void resetButtons() {
         for (Button btn : answers) {
             btn.setStyle(null);
         }
     }
-
+    
     public void setTriggers(QuizViewPresenter presenter) {
         prev.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
@@ -183,25 +187,25 @@ public class QuizView extends BorderPane {
                 presenter.previousQuestion();
             }
         });
-
+        
         next.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 presenter.nextQuestion();
             }
         });
-
+        
         for (Button btn : answers) {
             btn.setOnAction(e -> {
                 presenter.checkAnswer(btnAnswersCorrespondence.get(btn));
             });
         }
-
+        
         btnBack.setOnAction(e -> {
             presenter.back();
         });
     }
-
+    
     public void paintWrongButton(Answer answer) {
         for (Map.Entry<Button, Answer> entry : btnAnswersCorrespondence.entrySet()) {
             if (entry.getValue() == answer) {
@@ -209,7 +213,7 @@ public class QuizView extends BorderPane {
             }
         }
     }
-
+    
     public void paintCorrectButton(Answer answer) {
         for (Map.Entry<Button, Answer> entry : btnAnswersCorrespondence.entrySet()) {
             if (entry.getValue() == answer) {
@@ -217,7 +221,6 @@ public class QuizView extends BorderPane {
             }
         }
     }
-
     
     public boolean showInfo() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);

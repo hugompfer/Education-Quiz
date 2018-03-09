@@ -5,29 +5,33 @@
  */
 package educationalquiz.model;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * QuizDAOSerializable represents a persistance of the type serializable of
- * quizzes
+ * QuizDAOJSON represents a persistance of the type json of quizzes
  *
  * @author hugob
  */
-public class QuizDAOSerializable implements QuizDAO, Serializable {
+public class QuizDAOJSON implements QuizDAO {
 
-    private String basePath;
+    private final String basePath;
     private List<Quiz> quizs;
-    private final static String filename = "quizs.dat";
+    private final static String filename = "quizzes.dat";
 
-    public QuizDAOSerializable(String basePath) {
+    public QuizDAOJSON(String basePath) {
         this.basePath = basePath;
         quizs = new ArrayList<>();
         loadAll();
@@ -35,27 +39,36 @@ public class QuizDAOSerializable implements QuizDAO, Serializable {
 
     //load the file
     private void loadAll() {
+
         try {
-            FileInputStream fileIn = new FileInputStream(this.basePath + filename);
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            this.quizs = (ArrayList<Quiz>) in.readObject();
-            in.close();
-            fileIn.close();
-        } catch (IOException | ClassNotFoundException i) {
+            Gson gso = new GsonBuilder().setLenient().create();
+            Gson gso2 = new GsonBuilder().setLenient().create();
+            BufferedReader br = new BufferedReader(new FileReader(basePath + filename));
+
+            List<Quiz> list = gso.fromJson(br, new TypeToken<List<Quiz>>() {
+            }.getType());
+
+            this.quizs.addAll(list);
+
+        } catch (IOException i) {
+            this.quizs = new ArrayList<>();
         }
     }
-    
+
     //save on file
     private void saveAll() {
-        FileOutputStream fileOut = null;
+        FileWriter writer = null;
+        FileWriter writer2 = null;
         try {
-            fileOut = new FileOutputStream(basePath + filename);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(quizs);
-            out.close();
-            fileOut.close();
+            Gson gson = new Gson();
+            writer = new FileWriter(basePath + filename);
+            gson.toJson(quizs, writer);
+
+            writer.close();
         } catch (FileNotFoundException ex) {
+
         } catch (IOException ex) {
+
         }
 
     }
@@ -87,7 +100,7 @@ public class QuizDAOSerializable implements QuizDAO, Serializable {
         return quizs;
     }
 
-     /**
+    /**
      * remove the quiz in the persistance and save
      *
      * @param quiz quiz to remove
